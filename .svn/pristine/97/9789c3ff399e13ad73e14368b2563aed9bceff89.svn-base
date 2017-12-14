@@ -1,0 +1,27 @@
+setwd("C:/dev64/workspace/AnalysisTest")
+
+library(KoNLP)
+library(wordcloud)
+useSejongDic() 
+txt <- readLines("haruki.txt") 
+myword <- sapply(txt,extractNoun,USE.NAMES=F)
+myword 
+# 추출된 명사를 30 개만 출력해서 확인합니다.
+head(unlist(myword), 30)
+c <- unlist(myword) 
+myword <- Filter(function(x) {nchar(x) >= 2} ,c) 
+
+write(unlist(myword),"haruki_temp.txt") 
+rev <- read.table("haruki_temp.txt")
+nrow(rev)
+wordcount <- table(rev) 
+head(sort(wordcount, decreasing=T),30)
+library(RColorBrewer) 
+palete <- brewer.pal(9,"Set1") 
+png("haruki_temp.png")
+
+wordcloud(names(wordcount),freq=wordcount,scale=c(5,1),rot.per=0.25,min.freq=1,
+random.order=F,random.color=T,colors=palete)
+
+dev.off()
+
